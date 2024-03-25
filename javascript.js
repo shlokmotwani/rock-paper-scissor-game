@@ -5,17 +5,10 @@ function getComputerChoice(){
     return choice;
 }
 
-function playOneRound(){
-    let playerChoice = prompt("Choose from Rock, Paper and Scissor:");
-
-    if (playerChoice === null){
-        return null;
-    }
-
-    playerChoice = playerChoice.toLowerCase();
-    playerChoice = playerChoice[0].toUpperCase() + playerChoice.slice(1);
+function playOneRound(playerChoice){
     let computerChoice = getComputerChoice();
     computerChoice = computerChoice[0].toUpperCase() + computerChoice.slice(1);
+    console.log("Computer Choice = " + computerChoice);
     return(announceWinner(playerChoice, computerChoice));
 }
 
@@ -36,35 +29,40 @@ function announceWinner(playerChoice, computerChoice){
 
 function playGame(){
     let playerScore = computerScore = 0;
-    for(let i=0; i<5; i++){
-        let response = playOneRound();
-        console.log(response);
-        if(response === null){
-            console.log("Game ABORTS!");
-            return;
-        }
-        if(response[0] == "P"){
+
+    let buttonDiv = document.querySelector(".button-div");
+    let resultDiv = document.querySelector("#result-div");
+
+    let playerChoice = "";
+
+    buttonDiv.addEventListener("click", (e)=>{
+        playerChoice = e.target.textContent;
+        console.log("Player Choice = " + playerChoice);
+        let winner = playOneRound(playerChoice);
+
+        if(winner[0] == "P"){
             playerScore++;
             console.log("Player WINS this round");
         }
-        else if(response[0] == "C"){
+        else if(winner[0] == "C"){
             computerScore++;
             console.log("Computer WINS this round");
         }
         else{
             console.log("This round was a tie.");
         }
+
         console.log(`Score : Player - ${playerScore} / Computer - ${computerScore}`);
-    }
-    if (playerScore > computerScore){
-        return "Player won the game!";
-    }
-    else if (computerScore > playerScore){
-        return "Computer won the game!";
-    }
-    else{
-        return "The game is a tie!!!!";
-    }
+
+        if (playerScore == 5){
+            playerScore = computerScore = 0;
+            resultDiv.textContent = "Player won the game!";
+        }
+        if (computerScore == 5){
+            playerScore = computerScore = 0;
+            resultDiv.textContent = "Computer won the game!";
+        }
+    });  
 }
 
-console.log(playGame());
+playGame();
